@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { AuthContext } from "../../provider/AuthProvider";
 
 const Navbar = () => {
@@ -7,17 +7,15 @@ const Navbar = () => {
 
     const handleLogout = () => {
         logout().then(() => {
-            // Sign-out successful.
         }).catch((error) => {
-            // An error happened.
         });
 
     }
 
     const navLinks = <>
-        <li><Link to={"/"}>Home</Link></li>
-        <li><Link to={"/about"}>About</Link></li>
-        <li><Link to={"/contact"}>Contact</Link></li>
+        <li><NavLink to={"/"}>Home</NavLink></li>
+        <li><NavLink to={"/about"}>About</NavLink></li>
+        <li><NavLink to={"/contact"}>Contact</NavLink></li>
     </>
 
     return (
@@ -45,14 +43,16 @@ const Navbar = () => {
                             {navLinks}
                         </ul>
                     </div>
-                    <a className="btn btn-ghost text-xl">daisyUI</a>
+                    <Link to={"/"} className=" w-12 "><img src="https://i.ibb.co/zG0HQJR/logo-gadget-hunter.png" className="rounded-full" alt="" /></Link>
                 </div>
                 <div className="navbar-center hidden lg:flex">
                     <ul className="menu menu-horizontal px-1">
                         {navLinks}
                     </ul>
                 </div>
-                <div className="navbar-end">
+                <div className="navbar-end gap-8">
+                    <input type="text" placeholder="Search" className="input input-bordered w-24 md:w-auto" />
+
                     {user ? <button className="btn" onClick={handleLogout}>Logout</button> : <Link to={"/login"} className="btn">Login</Link>}
                 </div>
             </div>
