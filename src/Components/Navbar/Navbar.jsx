@@ -51,8 +51,6 @@ const Navbar = () => {
                     </ul>
                 </div>
                 <div className="navbar-end gap-8">
-                    <input type="text" placeholder="Search" className="input input-bordered w-24 md:w-auto" />
-
                     {user ? <button className="btn" onClick={handleLogout}>Logout</button> : <Link to={"/login"} className="btn">Login</Link>}
                 </div>
             </div>
