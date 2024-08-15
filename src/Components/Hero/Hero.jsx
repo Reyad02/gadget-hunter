@@ -1,7 +1,7 @@
 
 const Hero = ({ setSearch }) => {
     const handleSearchChange = (e) =>{
-        console.log("hero search", e.target.value)
+        // console.log("hero search", e.target.value)
         setSearch(e.target.value)
     }
     return (
