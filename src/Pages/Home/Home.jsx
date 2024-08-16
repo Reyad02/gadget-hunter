@@ -24,6 +24,11 @@ const Home = () => {
     const [minPrice, setMinPrice] = useState(null);
     const [maxPrice, setMaxPrice] = useState(null);
 
+    const handleSearchChange = (e) => {
+        setSearch(e.target.value)
+        setCurrentPage(1);
+    }
+
     const pageWithGadgets = (page) => {
         axios.get("/gadgets", {
             params: {
@@ -83,8 +88,13 @@ const Home = () => {
             <Helmet>
                 <title>Gadget Hunter - Home</title>
             </Helmet>
-            <Hero setSearch={setSearch} setFilterCategory={setFilterCategory}></Hero>
-
+            <div className="max-w-5xl mx-auto">
+                <label className="input input-bordered  flex items-center gap-2 bg-transparent border-white">
+                    <input type="text" name="searchQuery" className="grow bg-transparent text-white" placeholder="Search using product name..." onInput={handleSearchChange} />
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4 opacity-70 text-white"><path fillRule="evenodd" d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z" clipRule="evenodd" />
+                    </svg>
+                </label>
+            </div>
             <div className="mt-8 flex flex-col items-center lg:items-stretch lg:flex-row justify-between">
                 <div className="drawer lg:drawer-open lg:grow-0 lg:shrink-1 w-64">
                     <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
@@ -100,7 +110,10 @@ const Home = () => {
                             {/* Sidebar content here */}
                             <div className="border border-red-400 pb-2">
                                 <p className="text-lg font-semibold border-b-2 pb-2 mb-2 ">Brand Name</p>
-                                <select name="priceSort" id="" className="p-1" onChange={(e) => setFilterBrand(e.target.value)}  >
+                                <select name="priceSort" id="" className="p-1" onChange={(e) => {
+                                    setFilterBrand(e.target.value);
+                                    setCurrentPage(1);
+                                }}  >
                                     <option value="none" >All Brand</option>
                                     {
                                         brands.map((brand, idx) => <option key={idx} value={`${brand}`}>{brand}</option>)
@@ -108,7 +121,10 @@ const Home = () => {
                                 </select>
 
                                 <p className="text-lg font-semibold border-b-2 pb-2 mb-2 mt-4">Category Name</p>
-                                <select name="priceSort" id="" className="p-1" onChange={(e) => setFilterCategory(e.target.value)}  >
+                                <select name="priceSort" id="" className="p-1" onChange={(e) => {
+                                    setFilterCategory(e.target.value);
+                                    setCurrentPage(1);
+                                }}  >
                                     <option value="none" >All Category</option>
                                     {
                                         catgories.map((category, idx) => <option key={idx} value={`${category}`}>{category}</option>)
@@ -117,8 +133,8 @@ const Home = () => {
 
                                 <p className="text-lg font-semibold border-b-2 pb-2 mb-2 mt-4">Price Range</p>
                                 <div className="flex justify-between px-2" >
-                                    <input className="w-20 p-1" type="text" placeholder="Min" onChange={(e) => setMinPrice(e.target.value ? parseFloat(e.target.value) : null)} />
-                                    <input className="w-20 p-1" type="text" placeholder="Max" onChange={(e) => setMaxPrice(e.target.value ? parseFloat(e.target.value) : null)} />
+                                    <input className="w-20 p-1" type="text" placeholder="Min" onChange={(e) => { setMinPrice(e.target.value ? parseFloat(e.target.value) : null); setCurrentPage(1); }} />
+                                    <input className="w-20 p-1" type="text" placeholder="Max" onChange={(e) => { setMaxPrice(e.target.value ? parseFloat(e.target.value) : null); setCurrentPage(1); }} />
                                 </div>
 
                             </div>
@@ -143,10 +159,11 @@ const Home = () => {
                     </div>
                 </div>
 
-                {
-                    <div className=" lg:grow lg:shrink-0">
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {gadgets.map((gadget, idx) =>
+
+                <div className=" lg:grow lg:shrink-0">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {gadgets.length > 0 ?
+                            gadgets.map((gadget, idx) =>
                                 <div key={idx}>
                                     <div className="card bg-base-100 md:w-96 shadow-xl">
                                         <figure>
@@ -170,16 +187,22 @@ const Home = () => {
                                         </div>
                                     </div>
                                 </div>
-                            )}
-                        </div>
-                        <div className="flex justify-center mt-4">
+                            ) :
+                            <p className="text-xl font-semibold col-span-1 md:col-span-2 lg:col-span-3 text-center mt-4 md:mt-8 lg:mt-32">Nothing Found</p>
+                        }
+                    </div>
+                    <div className="flex justify-center mt-4">
+                        {gadgets.length > 0 && (
                             <div className="join">
                                 <button className="join-item btn btn-outline" onClick={() => handlePage(currentPage - 1)} disabled={currentPage === 1}>Previous</button>
                                 <button className="join-item btn btn-outline" onClick={() => handlePage(currentPage + 1)} disabled={currentPage === totalPage}>Next</button>
                             </div>
-                        </div>
+                        )
+                        }
+
                     </div>
-                }
+                </div>
+
             </div>
         </div>
     );

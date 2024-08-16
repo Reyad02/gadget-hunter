@@ -1,11 +1,7 @@
 
-const Hero = ({ setSearch, setFilterCategory }) => {
+const Hero = ({ setSearch }) => {
     const handleSearchChange = (e) =>{
-        // console.log("hero search", e.target.value)
         setSearch(e.target.value)
-        if(e.target.value){
-            setFilterCategory("none")
-        }
     }
     return (
         <div
