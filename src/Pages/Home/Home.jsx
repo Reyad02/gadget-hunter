@@ -12,12 +12,6 @@ const Home = () => {
     const postPerPage = 12;
     const [totalPage, setTotalPage] = useState(0)
 
-    /// searched value with search result pagination
-    const [fullResult, setFullResult] = useState([]);
-    const [searchedGadgets, setSearchedGadgets] = useState([])
-    const [searchedCurrentPage, setSearchedCurrentPage] = useState(1);
-    const [searchedTotalPage, setSearchedTotalPage] = useState(0);
-
     const [priceSort, setPriceSort] = useState(null);
     const [dateSort, setDateSort] = useState(null);
 
@@ -30,10 +24,6 @@ const Home = () => {
     const [minPrice, setMinPrice] = useState(null);
     const [maxPrice, setMaxPrice] = useState(null);
 
-
-    console.log("filterCategory", filterCategory);
-    console.log("filterBrand", filterBrand)
-
     const pageWithGadgets = (page) => {
         axios.get("/gadgets", {
             params: {
@@ -44,10 +34,12 @@ const Home = () => {
                 filterCategory: filterCategory,
                 filterBrand: filterBrand,
                 minPrice: minPrice,
-                maxPrice: maxPrice
+                maxPrice: maxPrice,
+                search: search
             }
         })
             .then(res => {
+                console.log(res.data.allGadgets)
                 setGadgets(res.data.allGadgets)
                 setCurrentPage(res.data.page);
                 setTotalPage(res.data.totPages);
@@ -58,37 +50,7 @@ const Home = () => {
     /// normal pagination with gadgets and all result
     useEffect(() => {
         pageWithGadgets(currentPage)
-
-        axios.get("/allGadgets", {
-            params: {
-                sortPrice: priceSort,
-                sortDate: dateSort,
-                // filterCategory: filterCategory
-            }
-        })
-            .then(res => {
-                setFullResult(res.data)
-                setTotalPage(Math.ceil(res.data.length / postPerPage))
-            }
-            )
-    }, [currentPage, priceSort, dateSort, filterCategory, filterBrand, minPrice, maxPrice])
-
-
-    //// for searched results and pagination 
-    useEffect(() => {
-        if (search) {
-            const searchingGadgets = fullResult.filter(gadget =>
-                gadget.name.toLowerCase().includes(search.toLowerCase())
-            );
-            setSearchedGadgets(searchingGadgets);
-            setSearchedTotalPage(Math.ceil(searchingGadgets.length / postPerPage));
-            setSearchedCurrentPage(1);
-
-        }
-        else {
-            setSearchedTotalPage(0);
-        }
-    }, [search, fullResult]);
+    }, [currentPage, priceSort, dateSort, filterCategory, filterBrand, minPrice, maxPrice, search])
 
     useEffect(() => {
         axios.get("/category")
@@ -102,7 +64,6 @@ const Home = () => {
         // Fetch brands
         axios.get("/brand")
             .then(res => {
-                console.log(res.data)
                 setBrands(res.data);
             })
             .catch(err => {
@@ -116,14 +77,6 @@ const Home = () => {
             pageWithGadgets(page)
         }
     }
-
-    const handleSearchedPage = (page) => {
-        if (page > 0 && page <= searchedTotalPage) {
-            setSearchedCurrentPage(page);
-        }
-    };
-
-    const currentSearchedGadgets = searchedGadgets.slice((searchedCurrentPage - 1) * postPerPage, searchedCurrentPage * postPerPage);
 
     return (
         <div>
@@ -147,7 +100,7 @@ const Home = () => {
                             {/* Sidebar content here */}
                             <div className="border border-red-400 pb-2">
                                 <p className="text-lg font-semibold border-b-2 pb-2 mb-2 ">Brand Name</p>
-                                <select name="priceSort" id="" className="p-1" onChange={(e) => setFilterBrand(e.target.value)} disabled={search}>
+                                <select name="priceSort" id="" className="p-1" onChange={(e) => setFilterBrand(e.target.value)}  >
                                     <option value="none" >All Brand</option>
                                     {
                                         brands.map((brand, idx) => <option key={idx} value={`${brand}`}>{brand}</option>)
@@ -155,7 +108,7 @@ const Home = () => {
                                 </select>
 
                                 <p className="text-lg font-semibold border-b-2 pb-2 mb-2 mt-4">Category Name</p>
-                                <select name="priceSort" id="" className="p-1" onChange={(e) => setFilterCategory(e.target.value)} disabled={search}>
+                                <select name="priceSort" id="" className="p-1" onChange={(e) => setFilterCategory(e.target.value)}  >
                                     <option value="none" >All Category</option>
                                     {
                                         catgories.map((category, idx) => <option key={idx} value={`${category}`}>{category}</option>)
@@ -164,8 +117,8 @@ const Home = () => {
 
                                 <p className="text-lg font-semibold border-b-2 pb-2 mb-2 mt-4">Price Range</p>
                                 <div className="flex justify-between px-2" >
-                                    <input className="w-20 p-1" type="text" placeholder="Min" disabled={search} onChange={(e) => setMinPrice(e.target.value ? parseFloat(e.target.value) : null)} />
-                                    <input className="w-20 p-1" type="text" placeholder="Max" disabled={search} onChange={(e) => setMaxPrice(e.target.value ? parseFloat(e.target.value) : null)}/>
+                                    <input className="w-20 p-1" type="text" placeholder="Min" onChange={(e) => setMinPrice(e.target.value ? parseFloat(e.target.value) : null)} />
+                                    <input className="w-20 p-1" type="text" placeholder="Max" onChange={(e) => setMaxPrice(e.target.value ? parseFloat(e.target.value) : null)} />
                                 </div>
 
                             </div>
@@ -191,80 +144,41 @@ const Home = () => {
                 </div>
 
                 {
-                    (!search || search === "") ?
-                        <div className=" lg:grow lg:shrink-0">
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                {gadgets.map((gadget, idx) =>
-                                    <div key={idx}>
-                                        <div className="card bg-base-100 md:w-96 shadow-xl">
-                                            <figure>
-                                                <img
-                                                    src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-                                                    alt="Shoes" />
-                                            </figure>
-                                            <div className="card-body">
-                                                <h2 className="card-title">
-                                                    {gadget.name}
-                                                    <div className="badge badge-secondary">NEW</div>
-                                                </h2>
-                                                <p>{gadget._id}</p>
-                                                <p>${gadget.price}.00</p>
-                                                <p>{gadget.creationDate}</p>
-                                                <p>If a dog chews shoes whose shoes does he choose?</p>
-                                                <div className="card-actions justify-end">
-                                                    <div className="badge badge-outline">Fashion</div>
-                                                    <div className="badge badge-outline">Products</div>
-                                                </div>
+                    <div className=" lg:grow lg:shrink-0">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {gadgets.map((gadget, idx) =>
+                                <div key={idx}>
+                                    <div className="card bg-base-100 md:w-96 shadow-xl">
+                                        <figure>
+                                            <img
+                                                src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+                                                alt="Shoes" />
+                                        </figure>
+                                        <div className="card-body">
+                                            <h2 className="card-title">
+                                                {gadget.name}
+                                                <div className="badge badge-secondary">NEW</div>
+                                            </h2>
+                                            <p>{gadget._id}</p>
+                                            <p>${gadget.price}.00</p>
+                                            <p>{gadget.creationDate}</p>
+                                            <p>If a dog chews shoes whose shoes does he choose?</p>
+                                            <div className="card-actions justify-end">
+                                                <div className="badge badge-outline">Fashion</div>
+                                                <div className="badge badge-outline">Products</div>
                                             </div>
                                         </div>
                                     </div>
-                                )}
-                            </div>
-                            <div className="flex justify-center mt-4">
-                                <div className="join">
-                                    <button className="join-item btn btn-outline" onClick={() => handlePage(currentPage - 1)} disabled={currentPage === 1}>Previous</button>
-                                    <button className="join-item btn btn-outline" onClick={() => handlePage(currentPage + 1)} disabled={currentPage === totalPage}>Next</button>
                                 </div>
+                            )}
+                        </div>
+                        <div className="flex justify-center mt-4">
+                            <div className="join">
+                                <button className="join-item btn btn-outline" onClick={() => handlePage(currentPage - 1)} disabled={currentPage === 1}>Previous</button>
+                                <button className="join-item btn btn-outline" onClick={() => handlePage(currentPage + 1)} disabled={currentPage === totalPage}>Next</button>
                             </div>
                         </div>
-                        :
-                        <div className="lg:grow lg:shrink-0">
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                {
-                                    currentSearchedGadgets.map((gadget, idx) =>
-                                        <div key={idx}>
-                                            <div className="card bg-base-100 md:w-96 shadow-xl">
-                                                <figure>
-                                                    <img
-                                                        src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-                                                        alt="Shoes" />
-                                                </figure>
-                                                <div className="card-body">
-                                                    <h2 className="card-title">
-                                                        {gadget.name}
-                                                        <div className="badge badge-secondary">NEW</div>
-                                                    </h2>
-                                                    <p>{gadget._id}</p>
-                                                    <p>${gadget.price}.00</p>
-                                                    <p>{gadget.creationDate}</p>
-                                                    <p>If a dog chews shoes whose shoes does he choose?</p>
-                                                    <div className="card-actions justify-end">
-                                                        <div className="badge badge-outline">Fashion</div>
-                                                        <div className="badge badge-outline">Products</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )
-                                }
-                            </div>
-                            <div className="flex justify-center mt-4">
-                                <div className="join">
-                                    <button className="join-item btn btn-outline" onClick={() => handleSearchedPage(searchedCurrentPage - 1)} disabled={searchedCurrentPage === 1}>Previous</button>
-                                    <button className="join-item btn btn-outline" onClick={() => handleSearchedPage(searchedCurrentPage + 1)} disabled={searchedCurrentPage === searchedTotalPage}>Next</button>
-                                </div>
-                            </div>
-                        </div>
+                    </div>
                 }
             </div>
         </div>
