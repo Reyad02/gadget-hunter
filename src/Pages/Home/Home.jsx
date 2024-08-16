@@ -21,13 +21,30 @@ const Home = () => {
     const [priceSort, setPriceSort] = useState(null);
     const [dateSort, setDateSort] = useState(null);
 
+    const [catgories, setCategories] = useState([]);
+    const [filterCategory, setFilterCategory] = useState("none");
+
+    const [brands, setBrands] = useState([]);
+    const [filterBrand, setFilterBrand] = useState("none");
+
+    const [minPrice, setMinPrice] = useState(null);
+    const [maxPrice, setMaxPrice] = useState(null);
+
+
+    console.log("filterCategory", filterCategory);
+    console.log("filterBrand", filterBrand)
+
     const pageWithGadgets = (page) => {
         axios.get("/gadgets", {
             params: {
                 page: page,
                 limit: postPerPage,
                 sortPrice: priceSort,
-                sortDate: dateSort
+                sortDate: dateSort,
+                filterCategory: filterCategory,
+                filterBrand: filterBrand,
+                minPrice: minPrice,
+                maxPrice: maxPrice
             }
         })
             .then(res => {
@@ -44,7 +61,8 @@ const Home = () => {
         axios.get("/allGadgets", {
             params: {
                 sortPrice: priceSort,
-                sortDate: dateSort
+                sortDate: dateSort,
+                // filterCategory: filterCategory
             }
         })
             .then(res => {
@@ -52,7 +70,7 @@ const Home = () => {
                 setTotalPage(Math.ceil(res.data.length / postPerPage))
             }
             )
-    }, [currentPage, priceSort, dateSort])
+    }, [currentPage, priceSort, dateSort, filterCategory, filterBrand, minPrice, maxPrice])
 
 
     //// for searched results and pagination 
@@ -70,6 +88,26 @@ const Home = () => {
             setSearchedTotalPage(0);
         }
     }, [search, fullResult]);
+
+    useEffect(() => {
+        axios.get("/category")
+            .then(res => {
+                setCategories(res.data);
+            })
+            .catch(err => {
+                console.error("Error fetching categories:", err);
+            });
+
+        // Fetch brands
+        axios.get("/brand")
+            .then(res => {
+                console.log(res.data)
+                setBrands(res.data);
+            })
+            .catch(err => {
+                console.error("Error fetching brands:", err);
+            });
+    }, [])
 
 
     const handlePage = (page) => {
@@ -91,7 +129,7 @@ const Home = () => {
             <Helmet>
                 <title>Gadget Hunter - Home</title>
             </Helmet>
-            <Hero setSearch={setSearch} ></Hero>
+            <Hero setSearch={setSearch} setFilterCategory={setFilterCategory}></Hero>
 
             <div className="mt-8 flex flex-col items-center lg:items-stretch lg:flex-row justify-between">
                 <div className="drawer lg:drawer-open lg:grow-0 lg:shrink-1 w-64">
@@ -104,22 +142,49 @@ const Home = () => {
                     </div>
                     <div className="drawer-side ">
                         <label htmlFor="my-drawer-2" aria-label="close sidebar" className="drawer-overlay"></label>
-                        <ul className="menu bg-base-200 text-white min-h-full p-4 w-64 ">
+                        <ul className="menu bg-base-200 text-white min-h-full p-4 w-64 space-y-4">
                             {/* Sidebar content here */}
-                            <p className="text-lg font-semibold border-b-2 pb-2 mb-2">Price</p>
-                            <select name="priceSort" id="" className="p-1" onChange={(e) => setPriceSort(e.target.value)}>
-                                <option value="none" hidden={true}>Select an Option</option>
-                                <option value="low">Low to High</option>
-                                <option value="high">High to Low</option>
-                            </select>
-                            <p className="text-lg font-semibold border-b-2 pb-2 mb-2 mt-4">Date</p>
-                            <select name="dateSort" id="" className="p-1" onChange={(e) => setDateSort(e.target.value)}>
-                                <option value="none" hidden={true}>Select an Option</option>
-                                <option value="new">Newest </option>
-                                <option value="old">Oldest</option>
-                            </select>
-                            <li><a>Sidebar Item 1</a></li>
-                            <li><a>Sidebar Item 2</a></li>
+                            <div className="border border-red-400 pb-2">
+                                <p className="text-lg font-semibold border-b-2 pb-2 mb-2 ">Brand Name</p>
+                                <select name="priceSort" id="" className="p-1" onChange={(e) => setFilterBrand(e.target.value)} disabled={search}>
+                                    <option value="none" >All Brand</option>
+                                    {
+                                        brands.map((brand, idx) => <option key={idx} value={`${brand}`}>{brand}</option>)
+                                    }
+                                </select>
+
+                                <p className="text-lg font-semibold border-b-2 pb-2 mb-2 mt-4">Category Name</p>
+                                <select name="priceSort" id="" className="p-1" onChange={(e) => setFilterCategory(e.target.value)} disabled={search}>
+                                    <option value="none" >All Category</option>
+                                    {
+                                        catgories.map((category, idx) => <option key={idx} value={`${category}`}>{category}</option>)
+                                    }
+                                </select>
+
+                                <p className="text-lg font-semibold border-b-2 pb-2 mb-2 mt-4">Price Range</p>
+                                <div className="flex justify-between px-2" >
+                                    <input className="w-20 p-1" type="text" placeholder="Min" disabled={search} onChange={(e) => setMinPrice(e.target.value ? parseFloat(e.target.value) : null)} />
+                                    <input className="w-20 p-1" type="text" placeholder="Max" disabled={search} onChange={(e) => setMaxPrice(e.target.value ? parseFloat(e.target.value) : null)}/>
+                                </div>
+
+                            </div>
+
+                            <div className="border border-red-400">
+                                <p className="text-lg font-semibold border-b-2 pb-2 mb-2 mt-4">Price</p>
+                                <select name="priceSort" id="" className="p-1" onChange={(e) => setPriceSort(e.target.value)}>
+                                    <option value="none" hidden={true}>Select an Option</option>
+                                    <option value="low">Low to High</option>
+                                    <option value="high">High to Low</option>
+                                </select>
+
+                                <p className="text-lg font-semibold border-b-2 pb-2 mb-2 mt-4">Date</p>
+                                <select name="dateSort" id="" className="p-1" onChange={(e) => setDateSort(e.target.value)}>
+                                    <option value="none" hidden={true}>Select an Option</option>
+                                    <option value="new">Newest </option>
+                                    <option value="old">Oldest</option>
+                                </select>
+                            </div>
+
                         </ul>
                     </div>
                 </div>
