@@ -50,6 +50,7 @@ const Home = () => {
             .then(res => {
                 setGadgets(res.data.allGadgets)
                 setCurrentPage(res.data.page);
+                setTotalPage(res.data.totPages);
             }
             )
     }
