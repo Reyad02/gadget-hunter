@@ -32,10 +32,10 @@ Before you begin, ensure you have the following installed:
 
 **Set up environment variables:**
 
-   REACT_APP_API_URL=http://localhost:5000/api
-   REACT_APP_EMAILJS_USER_ID=your_emailjs_user_id
-   REACT_APP_EMAILJS_SERVICE_ID=your_emailjs_service_id
-   REACT_APP_EMAILJS_TEMPLATE_ID=your_emailjs_template_id
+   - REACT_APP_API_URL=http://localhost:5000/api
+   - REACT_APP_EMAILJS_USER_ID=your_emailjs_user_id
+   - REACT_APP_EMAILJS_SERVICE_ID=your_emailjs_service_id
+   - REACT_APP_EMAILJS_TEMPLATE_ID=your_emailjs_template_id
 
 ### Running the Project
 
@@ -54,6 +54,3 @@ Before you begin, ensure you have the following installed:
 
 ```bash
 npm run build
-
-
-
