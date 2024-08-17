@@ -89,7 +89,7 @@ const Home = () => {
                 <title>Gadget Hunter - Home</title>
             </Helmet>
             <div className="max-w-5xl mx-auto">
-                <label className="input input-bordered  flex items-center gap-2 bg-transparent border-white">
+                <label className="input input-bordered  flex items-center gap-2 bg-transparent border-[#58CCF5]">
                     <input type="text" name="searchQuery" className="grow bg-transparent text-white" placeholder="Search using product name..." onInput={handleSearchChange} />
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4 opacity-70 text-white"><path fillRule="evenodd" d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z" clipRule="evenodd" />
                     </svg>
@@ -104,13 +104,13 @@ const Home = () => {
                             Filter
                         </label>
                     </div>
-                    <div className="drawer-side ">
+                    <div className="drawer-side z-50">
                         <label htmlFor="my-drawer-2" aria-label="close sidebar" className="drawer-overlay"></label>
-                        <ul className="menu bg-base-200 text-white min-h-full p-4 w-64 space-y-4">
+                        <ul className="menu  text-white min-h-full p-4 w-64 space-y-4">
                             {/* Sidebar content here */}
-                            <div className="border border-red-400 pb-2">
+                            <div className="pt-3 px-2 rounded-xl pb-4 bg-base-300">
                                 <p className="text-lg font-semibold border-b-2 pb-2 mb-2 ">Brand Name</p>
-                                <select name="priceSort" id="" className="p-1" onChange={(e) => {
+                                <select name="priceSort" id="" className="p-1 w-full" onChange={(e) => {
                                     setFilterBrand(e.target.value);
                                     setCurrentPage(1);
                                 }}  >
@@ -120,8 +120,8 @@ const Home = () => {
                                     }
                                 </select>
 
-                                <p className="text-lg font-semibold border-b-2 pb-2 mb-2 mt-4">Category Name</p>
-                                <select name="priceSort" id="" className="p-1" onChange={(e) => {
+                                <p className="text-lg font-semibold border-b-2 pb-2 mb-2 mt-4 ">Category Name</p>
+                                <select name="priceSort" id="" className="p-1 w-full " onChange={(e) => {
                                     setFilterCategory(e.target.value);
                                     setCurrentPage(1);
                                 }}  >
@@ -139,16 +139,16 @@ const Home = () => {
 
                             </div>
 
-                            <div className="border border-red-400">
+                            <div className=" px-2 rounded-xl pb-4 bg-base-300">
                                 <p className="text-lg font-semibold border-b-2 pb-2 mb-2 mt-4">Price</p>
-                                <select name="priceSort" id="" className="p-1" onChange={(e) => setPriceSort(e.target.value)}>
+                                <select name="priceSort" id="" className="p-1 w-full" onChange={(e) => setPriceSort(e.target.value)}>
                                     <option value="none" hidden={true}>Select an Option</option>
                                     <option value="low">Low to High</option>
                                     <option value="high">High to Low</option>
                                 </select>
 
                                 <p className="text-lg font-semibold border-b-2 pb-2 mb-2 mt-4">Date</p>
-                                <select name="dateSort" id="" className="p-1" onChange={(e) => setDateSort(e.target.value)}>
+                                <select name="dateSort" id="" className="p-1 w-full" onChange={(e) => setDateSort(e.target.value)}>
                                     <option value="none" hidden={true}>Select an Option</option>
                                     <option value="new">Newest </option>
                                     <option value="old">Oldest</option>
@@ -164,25 +164,25 @@ const Home = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {gadgets.length > 0 ?
                             gadgets.map((gadget, idx) =>
-                                <div key={idx}>
+                                <div className="z-10" key={idx}>
                                     <div className="card bg-base-100 md:w-96 shadow-xl">
                                         <figure>
                                             <img
-                                                src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-                                                alt="Shoes" />
+                                                src={gadget.image}
+                                                alt={gadget.name} 
+                                                className="h-56"/>
                                         </figure>
                                         <div className="card-body">
                                             <h2 className="card-title">
                                                 {gadget.name}
-                                                <div className="badge badge-secondary">NEW</div>
+                                                {/* <div className="badge badge-secondary">NEW</div> */}
                                             </h2>
-                                            <p>{gadget._id}</p>
                                             <p>${gadget.price}.00</p>
-                                            <p>{gadget.creationDate}</p>
-                                            <p>If a dog chews shoes whose shoes does he choose?</p>
+                                            <p>Added Date: {new Date(gadget.creationDate).toLocaleDateString()}</p>
+                                            <p>{gadget.description.length <= 50 ? gadget.description : `${gadget.description.slice(0, 50)}...`}</p>
                                             <div className="card-actions justify-end">
-                                                <div className="badge badge-outline">Fashion</div>
-                                                <div className="badge badge-outline">Products</div>
+                                                <div className="badge badge-outline">{gadget.brandName}</div>
+                                                <div className="badge badge-outline">{gadget.category}</div>
                                             </div>
                                         </div>
                                     </div>

@@ -13,9 +13,27 @@ const Navbar = () => {
     }
 
     const navLinks = <>
-        <li><NavLink to={"/"}>Home</NavLink></li>
-        <li><NavLink to={"/about"}>About</NavLink></li>
-        <li><NavLink to={"/contact"}>Contact</NavLink></li>
+        <li><NavLink
+            to={"/"}
+            style={({ isActive, isPending, isTransitioning }) => {
+                return {
+                    color: isActive ? "#58CCF5" : "white",
+                    viewTransitionName: isTransitioning ? "slide" : "",
+                };
+            }}
+        >Home</NavLink></li>
+        <li><NavLink to={"/about"} style={({ isActive, isPending, isTransitioning }) => {
+            return {
+                color: isActive ? "#58CCF5" : "white",
+                viewTransitionName: isTransitioning ? "slide" : "",
+            };
+        }}>About</NavLink></li>
+        <li><NavLink to={"/contact"} style={({ isActive, isPending, isTransitioning }) => {
+            return {
+                color: isActive ? "#58CCF5" : "white",
+                viewTransitionName: isTransitioning ? "slide" : "",
+            };
+        }}>Contact</NavLink></li>
     </>
 
     return (
@@ -51,7 +69,7 @@ const Navbar = () => {
                     </ul>
                 </div>
                 <div className="navbar-end gap-8">
-                    {user ? <button className="btn" onClick={handleLogout}>Logout</button> : <Link to={"/login"} className="btn">Login</Link>}
+                    {user ? <button className="btn text-[#58CCF5]" onClick={handleLogout}>Logout</button> : <Link to={"/login"} className="btn text-[#58CCF5]">Login</Link>}
                 </div>
             </div>
         </div>
