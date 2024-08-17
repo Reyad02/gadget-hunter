@@ -69,7 +69,7 @@ const Navbar = () => {
                     </ul>
                 </div>
                 <div className="navbar-end gap-8">
-                    {user ? <button className="btn text-[#58CCF5]" onClick={handleLogout}>Logout</button> : <Link to={"/login"} className="btn text-[#58CCF5]">Login</Link>}
+                    {user ? <button className="btn " onClick={handleLogout}>Logout</button> : <Link to={"/login"} className="btn ">Login</Link>}
                 </div>
             </div>
         </div>
