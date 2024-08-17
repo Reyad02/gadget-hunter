@@ -20,10 +20,12 @@ Before you begin, ensure you have the following installed:
    ```bash
    git clone https://github.com/yourusername/gadget-hunter-frontend.git
 2. **Navigate to the project directory:**
-   
+
+   ```bash
    cd gadget-hunter-frontend
 3. **Install dependencies:**
 
+   ```bash
    npm install
 
 ### Configuration
@@ -39,15 +41,18 @@ Before you begin, ensure you have the following installed:
 
 1. **Start the development server:**
 
+   ```bash
    npm start
 2. **Open your browser and navigate to:**
 
+   ```bash
     http://localhost:3000
 
 ### Building for Production
 
 **Create a production build:**
 
+```bash
 npm run build
 
 
