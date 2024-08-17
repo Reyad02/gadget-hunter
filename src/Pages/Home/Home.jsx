@@ -44,7 +44,7 @@ const Home = () => {
             }
         })
             .then(res => {
-                console.log(res.data.allGadgets)
+                // console.log(res.data.allGadgets)
                 setGadgets(res.data.allGadgets)
                 setCurrentPage(res.data.page);
                 setTotalPage(res.data.totPages);
@@ -194,7 +194,7 @@ const Home = () => {
                     <div className="flex justify-center mt-4">
                         {gadgets.length > 0 && (
                             <div className="join">
-                                <button className="join-item btn btn-outline a" onClick={() => handlePage(currentPage - 1)} disabled={currentPage === 1}>Previous</button>
+                                <button className="join-item btn btn-outline " onClick={() => handlePage(currentPage - 1)} disabled={currentPage === 1}>Previous</button>
                                 <button className="join-item btn btn-outline" onClick={() => handlePage(currentPage + 1)} disabled={currentPage === totalPage}>Next</button>
                             </div>
                         )

@@ -6,7 +6,7 @@ const About = () => {
             <Helmet>
                 <title>Gadget Hunter - About</title>
             </Helmet>
-            <div className="max-w-7xl mx-auto ">
+            <div className="max-w-7xl mx-auto px-4 lg:px-0">
                 <div className="my-4">
                     <h2 className="text-2xl font-bold mb-4">About Us</h2>
                     <p className="mb-4">
@@ -40,7 +40,7 @@ const About = () => {
                 </div>
 
                 <div className=" my-4">
-                    <div className="flex gap-4">
+                    <div className="flex flex-col lg:flex-row gap-4">
                         <div className="space-y-2">
                             <div className="collapse collapse-plus bg-base-200">
                                 <input type="radio" name="faq-accordion" id="faq1" defaultChecked />

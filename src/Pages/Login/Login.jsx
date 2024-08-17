@@ -66,7 +66,7 @@ const Login = () => {
                                         </label>
                                         <input type="password" name="password" placeholder="******" className="input input-bordered" required />
                                     </div>
-                                    <p className="text-red-600 text-sm">{error}</p>
+                                    <p className="text-red-600 text-sm">{error && "Use correct email and password"}</p>
                                     <div className="form-control mt-6">
                                         <button className="btn bg-[#58CCF5] text-white">Login</button>
                                     </div>
